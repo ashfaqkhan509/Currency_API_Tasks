@@ -12,6 +12,7 @@ CURRENCIES = [
 
 BASE_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@"
 
+
 def fetch_currency_data(days):
     """
     Fetch data from currency api
@@ -26,7 +27,7 @@ def fetch_currency_data(days):
 
     for i in range(days):
         date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
-    
+
         try:
             url = f"{BASE_URL}{date}/v1/currencies/usd.json"
             response = requests.get(url)
@@ -89,9 +90,8 @@ def process_currency_data(days):
     return:
         Return the result dictionary having currency details which include al the metrices for each currency
     """
-    
+
     historical_data = list(fetch_currency_data(days))
-    
 
     currency_analysis = {currency: {"values": [], "dates": []} for currency in CURRENCIES}
 
@@ -101,13 +101,10 @@ def process_currency_data(days):
         for currency, rate in day_data["usd"].items():
             currency_analysis[currency]["values"].append(rate)
             currency_analysis[currency]["dates"].append(day_data["date"])
-    
-
 
     results = {}
 
     for currency, data in currency_analysis.items():
-        
         values = data["values"]
         initial_value = values[0]
         final_value = values[-1]
