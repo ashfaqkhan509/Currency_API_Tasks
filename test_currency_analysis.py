@@ -1,7 +1,7 @@
 import unittest
 import os
 import csv
-from currency_api_tasks import(
+from currency_api_tasks import (
     standard_deviation,
     rate_of_change,
     moving_average,
@@ -20,7 +20,7 @@ class TestCurrencyAPITask(unittest.TestCase):
         Test the standard deviation function
         """
 
-        expected_result = 	107.9694634098
+        expected_result = 107.9694634098
         self.assertAlmostEqual(standard_deviation(self.test_data), expected_result)
 
     def test_rate_of_change_normal(self):
@@ -92,7 +92,7 @@ class TestCurrencyAPITask(unittest.TestCase):
 
         with open(filename, newline='') as file:
             reader = list(csv.reader(file))
-            
+
             expected_header = [
                 "Currency", "Initial Value", "Final Value", "Percentage Change",
                 "Volatility", "Avg Rate of Change", "7-Day MA", "30-Day MA"
