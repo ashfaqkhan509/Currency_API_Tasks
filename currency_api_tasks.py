@@ -63,7 +63,9 @@ def rate_of_change(currency_values):
     for i in range(1, len(currency_values)):
         change = (currency_values[i] - currency_values[i-1]) / currency_values[i-1]
         rate_change.append(change)
-    return rate_change
+
+    avg_rate_change = (sum(rate_change) / len(rate_change)) * 100 if rate_change else 0
+    return avg_rate_change
 
 
 def moving_average(currency_values, window):
@@ -112,8 +114,7 @@ def process_currency_data(days):
 
         volatility = standard_deviation(values)
 
-        rate_change = rate_of_change(values)
-        avg_rate_change = (sum(rate_change) / len(rate_change)) * 100 if rate_change else 0
+        avg_rate_change = rate_of_change(values)
 
         short_term_ma = moving_average(values, 7)
         long_term_ma = moving_average(values, 30)
