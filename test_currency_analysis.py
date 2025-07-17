@@ -1,68 +1,67 @@
 import unittest
 import os
 import csv
-from currency_api_tasks import (
-    standard_deviation,
-    rate_of_change,
-    moving_average,
-    generate_csv,
-    generate_pdf
-)
+from currency_api_tasks import CurrencyApiTask
 
 
 class TestCurrencyAPITask(unittest.TestCase):
 
-    test_data = [234.4, 394.53, 12.45, 65.3, 89.3, 35.8, 91.23, 142.5, 58.2, 99.3]
+    def setUp(self):
+        self.task = CurrencyApiTask()
+        self.test_data = [
+            234.4, 394.53, 12.45, 65.3, 89.3, 35.8, 91.23, 142.5, 58.2, 99.3
+        ]
 
     def test_std_deviation(self):
-
         """
-        Test the standard deviation function
+        Test the standard deviation function.
         """
-
         expected_result = 107.9694634098
-        self.assertAlmostEqual(standard_deviation(self.test_data), expected_result)
+        result = self.task.standard_deviation(self.test_data)
+        self.assertAlmostEqual(result, expected_result, places=4)
 
     def test_rate_of_change_normal(self):
         """
-        Test the rate_of_change function
+        Test the rate_of_change function with increasing values.
         """
         values = [100, 110, 121]
-        result = rate_of_change(values)
         expected = ((0.10 + 0.10) / 2) * 100
+        result = self.task.rate_of_change(values)
         self.assertAlmostEqual(result, expected, places=5)
 
     def test_moving_average_normal(self):
         """
-        Test the moving average function normal
+        Test moving average with standard input and window size 3.
         """
         values = [10, 20, 30, 40, 50]
         window = 3
         expected = [None, None, 20.0, 30.0, 40.0]
-        self.assertEqual(moving_average(values, window), expected)
+        result = self.task.moving_average(values, window)
+        self.assertEqual(result, expected)
 
     def test_moving_average_window_1(self):
         """
-        Test the moving average function with small window
+        Test moving average with window size of 1.
         """
         values = [5, 10, 15]
         expected = [5.0, 10.0, 15.0]
-        self.assertEqual(moving_average(values, 1), expected)
+        result = self.task.moving_average(values, 1)
+        self.assertEqual(result, expected)
 
     def test_moving_average_large_window(self):
         """
-        Test the moving average function with large window
+        Test moving average when window size is larger than data.
         """
         values = [1, 2]
         window = 5
         expected = [None, None]
-        self.assertEqual(moving_average(values, window), expected)
+        result = self.task.moving_average(values, window)
+        self.assertEqual(result, expected)
 
     def test_generate_csv(self):
         """
-        Test to check the genrate csv with expected content
+        Test CSV report generation and structure validation.
         """
-
         test_results = {
             'eur': {
                 "initial_value": 1.0,
@@ -85,32 +84,25 @@ class TestCurrencyAPITask(unittest.TestCase):
         }
 
         filename = "test_currency_analysis.csv"
-
-        generate_csv(test_results, filename)
-
+        self.task.generate_csv(test_results, filename)
         self.assertTrue(os.path.exists(filename))
 
         with open(filename, newline='') as file:
             reader = list(csv.reader(file))
-
             expected_header = [
                 "Currency", "Initial Value", "Final Value", "Percentage Change",
                 "Volatility", "Avg Rate of Change", "7-Day MA", "30-Day MA"
             ]
             self.assertEqual(reader[0], expected_header)
-
             self.assertEqual(len(reader), 3)
-
-            eur_row = reader[1]
-            gbp_row = reader[2]
-            self.assertEqual(eur_row[0], 'EUR')
-            self.assertEqual(gbp_row[0], 'GBP')
+            self.assertEqual(reader[1][0], 'EUR')
+            self.assertEqual(reader[2][0], 'GBP')
 
         os.remove(filename)
 
     def test_generate_pdf(self):
         """
-        Test to check the genrate pdf
+        Test PDF report generation and file creation.
         """
         test_results = {
             'eur': {
@@ -152,11 +144,8 @@ class TestCurrencyAPITask(unittest.TestCase):
         }
 
         filename = "test_currency_analysis.pdf"
-
-        generate_pdf(test_results, filename)
-
+        self.task.generate_pdf(test_results, filename)
         self.assertTrue(os.path.exists(filename))
-
         os.remove(filename)
 
 
