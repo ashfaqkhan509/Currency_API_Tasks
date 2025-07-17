@@ -85,7 +85,6 @@ class CurrencyApiTask:
         except Exception as e:
             print(f"Error fetching today's data: {e}")
 
-
     def standard_deviation(self, values):
         """
         Compute standard deviation.
@@ -167,7 +166,9 @@ class CurrencyApiTask:
 
             initial_value = values[0]
             final_value = values[-1]
-            percentage_change = ((final_value - initial_value) / initial_value) * 100 if initial_value else 0
+            percentage_change = (
+                ((final_value - initial_value) / initial_value) * 100 if initial_value else 0
+            )
             volatility = self.standard_deviation(values)
             average_rate_change = self.rate_of_change(values)
             short_term_moving_average = self.moving_average(values, 7)
@@ -177,8 +178,14 @@ class CurrencyApiTask:
                 "percentage_change": percentage_change,
                 "volatility": volatility,
                 "rate_of_change": average_rate_change,
-                "short_term_ma": short_term_moving_average[-1] if len(short_term_moving_average) >= 7 else None,
-                "long_term_ma": long_term_moving_average[-1] if len(long_term_moving_average) >= 30 else None,
+                "short_term_moving_average": (
+                    short_term_moving_average[-1]
+                    if len(short_term_moving_average) >= 7 else None
+                ),
+                "long_term_moving_average": (
+                    long_term_moving_average[-1]
+                    if len(long_term_moving_average) >= 30 else None
+                ),
                 "initial_value": initial_value,
                 "final_value": final_value,
                 "values": values,
